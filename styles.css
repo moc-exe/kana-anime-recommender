@@ -355,15 +355,14 @@ header {
   opacity: 1;
   transform: scaleY(1);
 }
-
 .card-list {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  max-height: 350px;      /* scroll happens inside the panel */
-  overflow-y: auto;
-  padding-right: 3px;
-  scrollbar-width: thin;
+  /* let cards be full height, page will scroll instead */
+  max-height: none;
+  overflow-y: visible;
+  padding-right: 0;
 }
 
 .card-list::-webkit-scrollbar {
