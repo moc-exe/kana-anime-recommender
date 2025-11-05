@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Anime Conversational Recommender – Prototype</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="app.js" defer></script>
+</head>
+
+<body>
+  <div class="app">
+    <header>
+      <div class="brand">
+        <div class="brand-logo">☆</div>
+        <div>
+          <div class="brand-text-main">kana • conversational anime guide</div>
+          <div class="brand-text-sub">
+            spoiler-safe discovery, minimal cognitive load
+          </div>
+        </div>
+      </div>
+      <div class="header-meta">
+        <div class="chip">
+          <span class="chip-dot"></span> Wizard-of-Oz prototype (scripted)
+        </div>
+        <div class="chip">Within-subjects study · SUS · NASA-TLX</div>
+      </div>
+    </header>
+
+    <main class="layout">
+      <!-- CHAT PANEL -->
+      <section class="panel">
+        <div class="panel-inner">
+          <div class="panel-title-row">
+            <div class="panel-title">
+              Conversation
+              <span class="panel-badge">AI-inspired mock</span>
+            </div>
+          </div>
+          <div class="panel-sub">
+            Tell Kana your mood, recent favourites, or what you’re in the mood
+            for. The replies and cards are scripted for this study.
+          </div>
+
+          <div id="chatScroll" class="chat-scroll"></div>
+
+          <form id="chatForm" class="chat-input-row">
+            <input
+              id="chatInput"
+              class="text-input"
+              type="text"
+              placeholder="Ex: 'I want something melancholic but not too long'"
+            />
+            <button type="submit" class="btn btn-primary">
+              Send
+            </button>
+          </form>
+          <div class="tiny">
+            Prototype note: no real AI model is used; responses follow a fixed
+            dialogue flow for user testing.
+          </div>
+
+          <div class="watchlist-row">
+            <label class="file-input">
+              <input id="watchlistInput" type="file" accept=".json" />
+              <span>Upload mock MyAnimeList / AniList export (.json)</span>
+            </label>
+            <span id="watchlistStatus" class="status-pill">
+              No watchlist loaded
+            </span>
+          </div>
+
+          <!-- Progressive disclosure: data usage explanation -->
+          <div class="data-usage-row">
+            <button type="button" id="dataUsageToggle" class="btn-ghost tiny-btn">
+              How is my data used?
+            </button>
+            <div
+              id="dataUsagePanel"
+              class="tiny data-usage-panel"
+              style="display: none"
+            >
+              In this prototype, your “watchlist” is mock data only. We don’t
+              store anything: the file is read in your browser and used just to
+              change the copy (e.g., “avoiding repeats”). In a real system, this
+              explanation would outline what is stored, where, and for how long.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CARDS PANEL -->
+      <section class="panel">
+        <div class="panel-inner">
+          <div class="panel-title-row">
+            <div class="panel-title">
+              Spoiler-safe recommendations
+              <span class="panel-badge">Progressive disclosure</span>
+            </div>
+          </div>
+          <div class="panel-sub">
+            Kana surfaces teaser cards first. You can progressively reveal more
+            details, swap picks, or skip titles to keep control over spoilers.
+          </div>
+
+          <div class="cards-header">
+            <h3>Current session</h3>
+            <div class="cards-hint" id="cardsHint">
+              Step 1 · Send a message to unlock recommendations
+            </div>
+          </div>
+
+          <!-- Note: hidden until first reply = progressive disclosure -->
+          <div id="cardListWrapper" class="card-list-wrapper is-hidden">
+            <div id="cardList" class="card-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- DISCORD MOCK PANEL -->
+      <aside class="panel discord-panel">
+        <div class="panel-inner">
+          <div class="discord-header-row">
+            <div class="discord-title">
+              <span class="icon">Ｄ</span> Discord share (mock)
+            </div>
+          </div>
+          <div class="discord-sub">
+            “Send to Discord” doesn’t actually post anywhere — it just drops a
+            preview here to simulate sharing spoiler-safe cards with friends.
+          </div>
+          <div id="discordScroll" class="discord-scroll">
+            <div class="discord-empty">
+              No cards shared yet. Try clicking “Send to Discord” on a
+              recommendation.
+            </div>
+          </div>
+        </div>
+      </aside>
+    </main>
+  </div>
+</body>
+</html>
