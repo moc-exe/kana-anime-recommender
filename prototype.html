@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Anime Conversational Recommender – Prototype</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    :root {
+      --bg: #050814;
+      --card-bg: #101524;
+      --accent: #7c5cff;
+      --accent-soft: rgba(124, 92, 255, 0.2);
+      --accent-strong: #f97316;
+      --border-subtle: #222739;
+      --text-main: #f9fafb;
+      --text-muted: #9ca3af;
+      --text-soft: #6b7280;
+      --danger: #f97373;
+      --radius-lg: 18px;
+      --radius-xl: 22px;
+      --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.55);
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: radial-gradient(circle at top, #1a2340 0, #050814 55%);
+      color: var(--text-main);
+    }
+
+    .app {
+      max-width: 1280px;
+      margin: 24px auto;
+      padding: 16px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-logo {
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      background: conic-gradient(
+        from 220deg,
+        #7c5cff,
+        #f97316,
+        #22c55e,
+        #7c5cff
+      );
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 800;
+      font-size: 18px;
+      box-shadow: 0 10px 25px rgba(124, 92, 255, 0.8);
+    }
+
+    .brand-text-main {
+      font-weight: 650;
+      letter-spacing: 0.02em;
+    }
+
+    .brand-text-sub {
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+
+    .header-meta {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .chip {
+      font-size: 11px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      background: rgba(15, 23, 42, 0.6);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .chip-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 6px rgba(34, 197, 94, 0.9);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr) 260px;
+      gap: 16px;
+    }
+
+    @media (max-width: 1080px) {
+      .layout {
+        grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.2fr);
+        grid-template-rows: auto 220px;
+      }
+      .discord-panel {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (max-width: 800px) {
+      .layout {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+      }
+    }
+
+    .panel {
+      background: radial-gradient(circle at top left, #1e293b 0, #020617 60%);
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(148, 163, 184, 0.28);
+      box-shadow: var(--shadow-soft);
+      padding: 14px 14px 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .panel::before {
+      content: "";
+      position: absolute;
+      inset: -70%;
+      background: radial-gradient(
+        circle at top right,
+        rgba(124, 92, 255, 0.23),
+        transparent 60%
+      );
+      opacity: 0.9;
+      pointer-events: none;
+      mix-blend-mode: screen;
+    }
+
+    .panel-inner {
+      position: relative;
+      z-index: 1;
+      height: 100%;
+    }
+
+    .panel-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      gap: 8px;
+    }
+
+    .panel-title {
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .panel-badge {
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      color: var(--text-soft);
+    }
+
+    .panel-sub {
+      font-size: 12px;
+      color: var(--text-soft);
+      margin-bottom: 10px;
+    }
+
+    /* Chat panel */
+    .chat-scroll {
+      height: 320px;
+      max-height: 55vh;
+      overflow-y: auto;
+      padding-right: 4px;
+      margin-bottom: 10px;
+      scrollbar-width: thin;
+    }
+
+    .chat-scroll::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .chat-scroll::-webkit-scrollbar-thumb {
+      background: #4b5563;
+      border-radius: 999px;
+    }
+
+    .msg-row {
+      display: flex;
+      margin-bottom: 8px;
+      gap: 6px;
+    }
+
+    .msg-row.user {
+      justify-content: flex-end;
+    }
+
+    .msg-bubble {
+      max-width: 80%;
+      padding: 8px 11px;
+      border-radius: 14px;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .msg-bubble.user {
+      background: linear-gradient(135deg, #7c5cff, #f97316);
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+
+    .msg-bubble.bot {
+      background: rgba(15, 23, 42, 0.92);
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      color: var(--text-main);
+      border-bottom-left-radius: 4px;
+    }
+
+    .msg-meta {
+      font-size: 10px;
+      color: var(--text-soft);
+      margin-top: 2px;
+    }
+
+    .chat-input-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 2px;
+    }
+
+    .text-input {
+      flex: 1;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: rgba(15, 23, 42, 0.6);
+      color: var(--text-main);
+      font-size: 13px;
+    }
+
+    .text-input::placeholder {
+      color: var(--text-soft);
+    }
+
+    .btn {
+      border-radius: 999px;
+      border: none;
+      font-size: 12px;
+      padding: 7px 11px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #7c5cff, #f97316);
+      color: white;
+      font-weight: 550;
+      box-shadow: 0 10px 25px rgba(124, 92, 255, 0.65);
+    }
+
+    .btn-ghost {
+      background: rgba(15, 23, 42, 0.8);
+      color: var(--text-muted);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+    }
+
+    /* Cards panel */
+    .cards-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .cards-header h3 {
+      font-size: 13px;
+      margin: 0;
+    }
+
+    .cards-hint {
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .card-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 350px;
+      overflow-y: auto;
+      padding-right: 3px;
+      scrollbar-width: thin;
+    }
+
+    .card-list::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .card-list::-webkit-scrollbar-thumb {
+      background: #4b5563;
+      border-radius: 999px;
+    }
+
+    .card {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.92), #020617);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      padding: 9px 10px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background: radial-gradient(
+        circle at top left,
+        rgba(124, 92, 255, 0.12),
+        transparent 60%
+      );
+      opacity: 0.9;
+      mix-blend-mode: screen;
+      pointer-events: none;
+    }
+
+    .card-upper,
+    .card-lower {
+      position: relative;
+      z-index: 1;
+    }
+
+    .card-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .card-title {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .card-tagline {
+      font-size: 11px;
+      color: var(--text-soft);
+      margin-top: 2px;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 4px;
+    }
+
+    .pill {
+      font-size: 10px;
+      padding: 3px 7px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      color: var(--text-muted);
+    }
+
+    .pill-accent {
+      border-color: rgba(249, 115, 22, 0.9);
+      color: var(--accent-strong);
+      background: rgba(15, 23, 42, 0.96);
+    }
+
+    .card-teaser {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    .card-buttons-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .btn-sm {
+      font-size: 11px;
+      padding: 5px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.95);
+      color: var(--text-muted);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .btn-sm.primary {
+      border-color: transparent;
+      background: rgba(124, 92, 255, 0.25);
+      color: #e5e7eb;
+    }
+
+    .btn-sm.danger {
+      border-color: transparent;
+      background: rgba(239, 68, 68, 0.2);
+      color: #fecaca;
+    }
+
+    .card-expanded {
+      margin-top: 6px;
+      padding-top: 6px;
+      border-top: 1px dashed rgba(148, 163, 184, 0.4);
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .card-meta-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-soft);
+      margin-bottom: 2px;
+    }
+
+    .link-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .link-pill {
+      font-size: 10px;
+      padding: 3px 7px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.92);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    /* Discord panel */
+    .discord-panel {
+      min-height: 240px;
+    }
+
+    .discord-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .discord-title {
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .discord-title span.icon {
+      width: 18px;
+      height: 18px;
+      border-radius: 7px;
+      background: #4752c4;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: white;
+    }
+
+    .discord-sub {
+      font-size: 11px;
+      color: var(--text-soft);
+      margin-bottom: 6px;
+    }
+
+    .discord-scroll {
+      max-height: 240px;
+      overflow-y: auto;
+      padding-right: 3px;
+      scrollbar-width: thin;
+      font-size: 11px;
+    }
+
+    .discord-scroll::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .discord-scroll::-webkit-scrollbar-thumb {
+      background: #4b5563;
+      border-radius: 999px;
+    }
+
+    .discord-msg {
+      margin-bottom: 8px;
+      padding: 6px 7px;
+      border-radius: 10px;
+      background: rgba(15, 23, 42, 0.96);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+    }
+
+    .discord-meta {
+      font-weight: 600;
+      color: #e5e7eb;
+      margin-bottom: 2px;
+      font-size: 11px;
+    }
+
+    .discord-text {
+      color: var(--text-muted);
+    }
+
+    .discord-empty {
+      font-size: 11px;
+      color: var(--text-soft);
+      font-style: italic;
+    }
+
+    /* Watchlist upload */
+    .watchlist-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .file-input {
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .status-pill {
+      font-size: 11px;
+      padding: 3px 7px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.96);
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      color: var(--text-muted);
+    }
+
+    .status-pill.good {
+      border-color: rgba(34, 197, 94, 0.9);
+      color: #bbf7d0;
+    }
+
+    .status-pill.bad {
+      border-color: rgba(248, 113, 113, 0.9);
+      color: #fecaca;
+    }
+
+    .tiny {
+      font-size: 10px;
+      color: var(--text-soft);
+      margin-top: 2px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <header>
+      <div class="brand">
+        <div class="brand-logo">☆</div>
+        <div>
+          <div class="brand-text-main">kana • conversational anime guide</div>
+          <div class="brand-text-sub">
+            spoiler-safe discovery, minimal cognitive load
+          </div>
+        </div>
+      </div>
+      <div class="header-meta">
+        <div class="chip">
+          <span class="chip-dot"></span> Wizard-of-Oz prototype (scripted)
+        </div>
+        <div class="chip">Within-subjects study · SUS · NASA-TLX</div>
+      </div>
+    </header>
+
+    <main class="layout">
+      <!-- CHAT PANEL -->
+      <section class="panel">
+        <div class="panel-inner">
+          <div class="panel-title-row">
+            <div class="panel-title">
+              Conversation
+              <span class="panel-badge">AI-inspired mock</span>
+            </div>
+          </div>
+          <div class="panel-sub">
+            Tell Kana your mood, recent favourites, or what you’re in the mood
+            for. The replies and cards are scripted for this study.
+          </div>
+
+          <div id="chatScroll" class="chat-scroll"></div>
+
+          <form id="chatForm" class="chat-input-row">
+            <input id="chatInput" class="text-input" type="text"
+                   placeholder="Ex: 'I want something melancholic but not too long'" />
+            <button type="submit" class="btn btn-primary">
+              Send
+            </button>
+          </form>
+          <div class="tiny">
+            Prototype note: no real AI model is used; responses follow a fixed
+            dialogue flow for user testing.
+          </div>
+
+          <div class="watchlist-row">
+            <label class="file-input">
+              <input id="watchlistInput" type="file" accept=".json" />
+              <span>Upload mock MyAnimeList / AniList export (.json)</span>
+            </label>
+            <span id="watchlistStatus" class="status-pill">No watchlist loaded</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- CARDS PANEL -->
+      <section class="panel">
+        <div class="panel-inner">
+          <div class="panel-title-row">
+            <div class="panel-title">Spoiler-safe recommendations</div>
+          </div>
+          <div class="panel-sub">
+            Kana surfaces teaser cards first. You can progressively reveal more
+            details, swap picks, or skip titles to keep control over spoilers.
+          </div>
+
+          <div class="cards-header">
+            <h3>Current session</h3>
+            <div class="cards-hint" id="cardsHint">
+              Waiting for your first message…
+            </div>
+          </div>
+
+          <div id="cardList" class="card-list"></div>
+        </div>
+      </section>
+
+      <!-- DISCORD MOCK PANEL -->
+      <aside class="panel discord-panel">
+        <div class="panel-inner">
+          <div class="discord-header-row">
+            <div class="discord-title">
+              <span class="icon">Ｄ</span> Discord share (mock)
+            </div>
+          </div>
+          <div class="discord-sub">
+            “Send to Discord” doesn’t actually post anywhere — it just drops a
+            preview here to simulate sharing spoiler-safe cards with friends.
+          </div>
+          <div id="discordScroll" class="discord-scroll">
+            <div class="discord-empty">
+              No cards shared yet. Try clicking “Send to Discord” on a
+              recommendation.
+            </div>
+          </div>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <script>
+    // --------- SCRIPTED DATA (mock recommendation pool) ----------
+    const SAMPLE_ANIME = [
+      {
+        id: 1,
+        title: "Casshern Sins",
+        moodTags: ["Melancholic", "Philosophical", "Slow-burn"],
+        teaser:
+          "A wandering android in a ruined world, trying to understand why everything is falling apart.",
+        safeDetails:
+          "Great if you enjoy quiet, reflective episodes with bursts of surreal action. Focuses on regret, purpose and identity rather than plot twists.",
+        watchLength: "24 episodes",
+        vibe: "Somber · introspective · existential",
+        links: [
+          { label: "Open on MyAnimeList (mock)", url: "#" },
+          { label: "Trailer (YouTube, mock)", url: "#" },
+        ],
+      },
+      {
+        id: 2,
+        title: "Terror in Resonance",
+        moodTags: ["Modern", "Psychological", "Suspense"],
+        teaser:
+          "Two mysterious teens turn Tokyo into a puzzle box of cryptic messages and moral dilemmas.",
+        safeDetails:
+          "Good for when you want tension and mystery without revealing the core twists. Heavy themes but short and focused.",
+        watchLength: "11 episodes",
+        vibe: "Tense · urban · morally grey",
+        links: [{ label: "Series page (mock)", url: "#" }],
+      },
+      {
+        id: 3,
+        title: "Puella Magi Madoka Magica",
+        moodTags: ["Deceptively cute", "Dark", "Mind-bending"],
+        teaser:
+          "Starts like a typical magical-girl show… but the tone shifts into something much heavier.",
+        safeDetails:
+          "Best if you like emotional gut-punches and playing with genre expectations. Spoiler-sensitive: the card avoids late-series events.",
+        watchLength: "12 episodes",
+        vibe: "Emotional · subversive · tragic",
+        links: [{ label: "Watchlist entry (mock)", url: "#" }],
+      },
+      {
+        id: 4,
+        title: "Sing “Yesterday” for Me",
+        moodTags: ["Grounded", "Romantic drama", "Adult life"],
+        teaser:
+          "Ex-students drifting through part-time jobs and unresolved feelings, trying to move on from the past.",
+        safeDetails:
+          "Slice-of-life with messy adult relationships. Good if you want slow emotional burn, not big plot twists.",
+        watchLength: "12 episodes (+ specials)",
+        vibe: "Bittersweet · realistic · low-key",
+        links: [{ label: "Character gallery (mock)", url: "#" }],
+      },
+      {
+        id: 5,
+        title: "Ghost in the Shell: Stand Alone Complex",
+        moodTags: ["Cyberpunk", "Philosophical", "Action"],
+        teaser:
+          "Special ops in a networked future where the line between human and machine is messy.",
+        safeDetails:
+          "Episodic investigations with occasional arcs. Big questions about identity and society, but you can drop in and out.",
+        watchLength: "26 episodes",
+        vibe: "Cool-headed · cerebral · stylish",
+        links: [{ label: "Episode list (mock)", url: "#" }],
+      },
+    ];
+
+    // --------- STATE ----------
+    const chatScroll = document.getElementById("chatScroll");
+    const chatForm = document.getElementById("chatForm");
+    const chatInput = document.getElementById("chatInput");
+    const cardList = document.getElementById("cardList");
+    const cardsHint = document.getElementById("cardsHint");
+    const watchlistInput = document.getElementById("watchlistInput");
+    const watchlistStatus = document.getElementById("watchlistStatus");
+    const discordScroll = document.getElementById("discordScroll");
+
+    let usedAnimeIds = new Set();
+    let watchlistSize = 0;
+
+    // --------- UTILITIES ----------
+    function addChatMessage(sender, text) {
+      const row = document.createElement("div");
+      row.className = "msg-row " + sender;
+
+      const bubble = document.createElement("div");
+      bubble.className = "msg-bubble " + sender;
+      bubble.textContent = text;
+
+      row.appendChild(bubble);
+      chatScroll.appendChild(row);
+
+      chatScroll.scrollTop = chatScroll.scrollHeight;
+    }
+
+    function addBotMessage(text) {
+      addChatMessage("bot", text);
+    }
+
+    function addUserMessage(text) {
+      addChatMessage("user", text);
+    }
+
+    function pickNextAnimeSet(count = 3) {
+      const available = SAMPLE_ANIME.filter((a) => !usedAnimeIds.has(a.id));
+      if (available.length === 0) {
+        usedAnimeIds.clear();
+        return pickNextAnimeSet(count);
+      }
+      const shuffled = [...available].sort(() => Math.random() - 0.5);
+      return shuffled.slice(0, count);
+    }
+
+    function clearCardList() {
+      cardList.innerHTML = "";
+    }
+
+    function createAnimeCard(anime) {
+      const card = document.createElement("article");
+      card.className = "card";
+
+      // Upper
+      const upper = document.createElement("div");
+      upper.className = "card-upper";
+
+      const titleRow = document.createElement("div");
+      titleRow.className = "card-title-row";
+
+      const title = document.createElement("div");
+      title.className = "card-title";
+      title.textContent = anime.title;
+
+      const lengthPill = document.createElement("div");
+      lengthPill.className = "pill pill-accent";
+      lengthPill.textContent = anime.watchLength;
+
+      titleRow.appendChild(title);
+      titleRow.appendChild(lengthPill);
+
+      const tagline = document.createElement("div");
+      tagline.className = "card-tagline";
+      tagline.textContent = anime.vibe;
+
+      const pillRow = document.createElement("div");
+      pillRow.className = "pill-row";
+      anime.moodTags.forEach((tag) => {
+        const pill = document.createElement("div");
+        pill.className = "pill";
+        pill.textContent = tag;
+        pillRow.appendChild(pill);
+      });
+
+      const teaser = document.createElement("div");
+      teaser.className = "card-teaser";
+      teaser.textContent = anime.teaser;
+
+      upper.appendChild(titleRow);
+      upper.appendChild(tagline);
+      upper.appendChild(pillRow);
+      upper.appendChild(teaser);
+
+      // Lower (buttons & expanded details)
+      const lower = document.createElement("div");
+      lower.className = "card-lower";
+
+      const btnRow = document.createElement("div");
+      btnRow.className = "card-buttons-row";
+
+      const moreBtn = document.createElement("button");
+      moreBtn.type = "button";
+      moreBtn.className = "btn-sm primary";
+      moreBtn.textContent = "Reveal more (still spoiler-safe)";
+
+      const againBtn = document.createElement("button");
+      againBtn.type = "button";
+      againBtn.className = "btn-sm";
+      againBtn.textContent = "Show something similar";
+
+      const skipBtn = document.createElement("button");
+      skipBtn.type = "button";
+      skipBtn.className = "btn-sm danger";
+      skipBtn.textContent = "Skip";
+
+      const shareBtn = document.createElement("button");
+      shareBtn.type = "button";
+      shareBtn.className = "btn-sm";
+      shareBtn.textContent = "Send to Discord";
+
+      btnRow.appendChild(moreBtn);
+      btnRow.appendChild(againBtn);
+      btnRow.appendChild(skipBtn);
+      btnRow.appendChild(shareBtn);
+
+      const expanded = document.createElement("div");
+      expanded.className = "card-expanded";
+      expanded.style.display = "none";
+
+      const label = document.createElement("div");
+      label.className = "card-meta-label";
+      label.textContent = "What you’ll get (no major spoilers)";
+
+      const details = document.createElement("div");
+      details.textContent = anime.safeDetails;
+
+      const linkRow = document.createElement("div");
+      linkRow.className = "link-row";
+      anime.links.forEach((lnk) => {
+        const a = document.createElement("a");
+        a.href = lnk.url;
+        a.target = "_blank";
+        a.rel = "noreferrer";
+        a.className = "link-pill";
+        a.textContent = lnk.label;
+        linkRow.appendChild(a);
+      });
+
+      expanded.appendChild(label);
+      expanded.appendChild(details);
+      expanded.appendChild(linkRow);
+
+      lower.appendChild(btnRow);
+      lower.appendChild(expanded);
+
+      // Assemble
+      card.appendChild(upper);
+      card.appendChild(lower);
+
+      // Interactions
+      moreBtn.addEventListener("click", () => {
+        const showing = expanded.style.display === "block";
+        expanded.style.display = showing ? "none" : "block";
+        moreBtn.textContent = showing
+          ? "Reveal more (still spoiler-safe)"
+          : "Hide extra details";
+      });
+
+      againBtn.addEventListener("click", () => {
+        usedAnimeIds.add(anime.id);
+        refreshRecommendations("similar");
+      });
+
+      skipBtn.addEventListener("click", () => {
+        usedAnimeIds.add(anime.id);
+        card.remove();
+        if (!cardList.children.length) {
+          refreshRecommendations("fresh");
+        }
+      });
+
+      shareBtn.addEventListener("click", () => {
+        addDiscordShare(anime);
+      });
+
+      return card;
+    }
+
+    function renderRecommendationSet(modeText) {
+      clearCardList();
+      const set = pickNextAnimeSet(3);
+      set.forEach((anime) => {
+        const card = createAnimeCard(anime);
+        cardList.appendChild(card);
+      });
+      cardsHint.textContent = modeText;
+    }
+
+    function refreshRecommendations(mode) {
+      if (mode === "similar") {
+        renderRecommendationSet("Showing similar-vibe picks based on your skips.");
+      } else {
+        renderRecommendationSet("Fresh picks based on your latest message and watchlist.");
+      }
+    }
+
+    function addDiscordShare(anime) {
+      const emptyMsg = discordScroll.querySelector(".discord-empty");
+      if (emptyMsg) emptyMsg.remove();
+
+      const msg = document.createElement("div");
+      msg.className = "discord-msg";
+
+      const meta = document.createElement("div");
+      meta.className = "discord-meta";
+      meta.textContent = "You · shared a card";
+
+      const body = document.createElement("div");
+      body.className = "discord-text";
+      body.textContent = `${anime.title} — ${anime.teaser}`;
+
+      msg.appendChild(meta);
+      msg.appendChild(body);
+
+      discordScroll.appendChild(msg);
+      discordScroll.scrollTop = discordScroll.scrollHeight;
+    }
+
+    // --------- WATCHLIST UPLOAD ----------
+    watchlistInput.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        try {
+          const json = JSON.parse(evt.target.result);
+
+          let size = 0;
+          if (Array.isArray(json)) size = json.length;
+          else if (typeof json === "object" && json !== null)
+            size = Object.keys(json).length;
+
+          watchlistSize = size;
+          watchlistStatus.textContent =
+            size > 0
+              ? `Watchlist loaded · ${size} titles`
+              : "Watchlist loaded (mock format)";
+          watchlistStatus.classList.remove("bad");
+          watchlistStatus.classList.add("good");
+        } catch (err) {
+          watchlistSize = 0;
+          watchlistStatus.textContent = "Could not read JSON file";
+          watchlistStatus.classList.remove("good");
+          watchlistStatus.classList.add("bad");
+        }
+      };
+      reader.readAsText(file);
+    });
+
+    // --------- CHAT FLOW ----------
+    function handleFirstMessage(text) {
+      addUserMessage(text);
+
+      let intro =
+        "Got it — I’ll keep things spoiler-safe and light on text. I’ll start with a few teasers you can expand when you’re ready.";
+      if (watchlistSize > 0) {
+        intro += ` I’m also quietly using your watchlist (mock, ${watchlistSize} titles) to avoid obvious repeats.`;
+      }
+
+      addBotMessage(intro);
+      addBotMessage(
+        "You can tell me things like “short and melancholic”, “adult drama, no isekai”, or “philosophical sci-fi but not too bleak.”"
+      );
+      renderRecommendationSet(
+        "Initial recommendations based on your first message."
+      );
+    }
+
+    function handleFollowupMessage(text) {
+      addUserMessage(text);
+      addBotMessage(
+        "Thanks, I’ll gently adjust the vibe. Try expanding a card, skipping one that feels off, or asking for something similar."
+      );
+      refreshRecommendations("fresh");
+    }
+
+    let hasStarted = false;
+
+    chatForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const text = chatInput.value.trim();
+      if (!text) return;
+      chatInput.value = "";
+
+      if (!hasStarted) {
+        hasStarted = true;
+        handleFirstMessage(text);
+      } else {
+        handleFollowupMessage(text);
+      }
+    });
+
+    // Seed opening bot message
+    addBotMessage(
+      "Hey, I’m Kana. Tell me what you feel like watching — mood, length, or vibes — and I’ll surface spoiler-safe anime cards you can expand at your own pace."
+    );
+    addBotMessage(
+      "Nothing you see here is a real AI response: this is a scripted prototype for your HCI study."
+    );
+  </script>
+</body>
+</html>
