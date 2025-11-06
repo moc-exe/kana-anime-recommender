@@ -1,70 +1,7 @@
 
 // --------- SCRIPTED DATA (mock recommendation pool) ----------
-const SAMPLE_ANIME = [
-  {
-    id: 1,
-    title: "Casshern Sins",
-    moodTags: ["Melancholic", "Philosophical", "Slow-burn"],
-    themes: ["Regret", "Identity", "Apocalypse"],
-    shortDescription:
-      "A wandering android in a decaying world, slowly realizing his role in why everything is collapsing.",
-    synopsis:
-      "In a ruined future where robots and humans are both succumbing to a mysterious 'Ruin', Casshern travels across desolate landscapes, meeting people who blame him for the end of the world. The show is episodic, reflective, and gives you emotional punches through quiet encounters rather than fast plot twists.",
-    watchLength: "24 episodes",
-    links: [
-      { label: "MyAnimeList page (mock)", url: "#" },
-      { label: "Trailer (mock)", url: "#" },
-    ],
-  },
-  {
-    id: 2,
-    title: "Terror in Resonance",
-    moodTags: ["Modern", "Psychological", "Suspense"],
-    themes: ["Terrorism", "Trauma", "Media"],
-    shortDescription:
-      "Two enigmatic teens stage elaborate attacks in Tokyo, treating the city like a puzzle to be solved.",
-    synopsis:
-      "The series follows 'Nine' and 'Twelve', two boys behind cryptic terror attacks, and Lisa, a lonely girl who gets dragged into their plans. The focus is on tension, moral ambiguity, and how society and media react, rather than on big mystery twists alone.",
-    watchLength: "11 episodes",
-    links: [{ label: "Series page (mock)", url: "#" }],
-  },
-  {
-    id: 3,
-    title: "Puella Magi Madoka Magica",
-    moodTags: ["Deceptively cute", "Dark", "Mind-bending"],
-    themes: ["Hope", "Despair", "Sacrifice"],
-    shortDescription:
-      "Looks like a typical magical-girl show at first, but gradually turns into something much heavier.",
-    synopsis:
-      "Madoka and her friends are offered the chance to become magical girls in exchange for a single wish. As they learn more about what that really means, the tone shifts from cute to tragic, exploring the cost of wishes, fate, and repeating timelines. Knowing it gets dark is fine — the card avoids explicit late-series spoilers.",
-    watchLength: "12 episodes",
-    links: [{ label: "Watchlist entry (mock)", url: "#" }],
-  },
-  {
-    id: 4,
-    title: "Sing “Yesterday” for Me",
-    moodTags: ["Grounded", "Romantic drama", "Adult life"],
-    themes: ["Stagnation", "Unrequited love", "Moving on"],
-    shortDescription:
-      "Post-grad drifters juggle part-time jobs and stuck feelings while trying to figure out adulthood.",
-    synopsis:
-      "Rikuo, an ex-student working at a convenience store, crosses paths with an eccentric girl and an old crush. The show focuses on awkward conversations, unresolved relationships, and small choices rather than big dramatic twists. Good if you like slow emotional burn over plot-heavy storytelling.",
-    watchLength: "12 episodes (+ specials)",
-    links: [{ label: "Character gallery (mock)", url: "#" }],
-  },
-  {
-    id: 5,
-    title: "Ghost in the Shell: Stand Alone Complex",
-    moodTags: ["Cyberpunk", "Philosophical", "Action"],
-    themes: ["Identity", "Networks", "Surveillance"],
-    shortDescription:
-      "A special-ops unit handles crimes in a wired future where humans and machines deeply overlap.",
-    synopsis:
-      "Section 9 investigates cybercrimes and political scandals in a society where 'ghosts' (consciousness) can live in fully artificial bodies. Many episodes are stand-alone, with arcs like the Laughing Man tying things together. You get action plus slow, thoughtful episodes about what it means to be human.",
-    watchLength: "26 episodes",
-    links: [{ label: "Episode list (mock)", url: "#" }],
-  },
-];
+let SAMPLE_ANIME = [];
+let animeDataLoaded = false;
 
 
 // --------- DOM ELEMENTS ----------
@@ -89,6 +26,31 @@ let watchlistSize = 0; // stores the len of the entries in the uploaded json fil
 let hasStarted = false; // until the first chat message started
 
 // --------- UTILITIES ----------
+
+
+async function loadAnimeData() {
+  try {
+    const response = await fetch("data/shows.json");
+    if (!response.ok) {
+      throw new Error("HTTP " + response.status);
+    }
+    const data = await response.json();
+
+    if (!Array.isArray(data)) {
+      throw new Error("Anime data is not an array");
+    }
+
+    SAMPLE_ANIME = data;
+    animeDataLoaded = true;
+    console.log("Anime data loaded:", SAMPLE_ANIME.length);
+  } catch (err) {
+    console.error("Failed to load anime data", err);
+    // optional: reuse your toast
+    if (typeof showToast === "function") {
+      showToast("Could not load anime data", false);
+    }
+  }
+};
 
 /**
  * addChatMessage builds a `<div>` with classes like "msg-row bot" or "msg-row user", 
@@ -137,11 +99,18 @@ function addUserMessage(text) {
  * @returns 
  */
 function pickNextAnimeSet(count = 3) {
+  if (!animeDataLoaded || !SAMPLE_ANIME.length) {
+    // nothing loaded yet
+    return [];
+  }
+
   const available = SAMPLE_ANIME.filter((a) => !usedAnimeIds.has(a.id));
-  if (available.length === 0) {
+
+  if (!available.length) {
     usedAnimeIds = new Set();
     return pickNextAnimeSet(count);
   }
+
   const shuffled = [...available].sort(() => Math.random() - 0.5);
   return shuffled.slice(0, count);
 }
@@ -183,6 +152,15 @@ function createAnimeCard(anime) {
   const upper = document.createElement("div");
   upper.className = "card-upper";
 
+  // add show cover image (if present)
+  if (anime.cover) {
+    const img = document.createElement("img");
+    img.src = anime.cover;
+    img.alt = `${anime.title} cover`;
+    img.className = "card-cover";
+    upper.appendChild(img);
+  }
+
   const titleRow = document.createElement("div");
   titleRow.className = "card-title-row";
 
@@ -197,6 +175,29 @@ function createAnimeCard(anime) {
   titleRow.appendChild(title);
   titleRow.appendChild(lengthPill);
   upper.appendChild(titleRow);
+
+  // MAL rating row (if malScore exists in the data)
+  if (typeof anime.malScore === "number") {
+    const metaRow = document.createElement("div");
+    metaRow.className = "card-meta-row";
+
+    const rating = document.createElement("div");
+    rating.className = "card-rating";
+
+    const malImg = document.createElement("img");
+    malImg.src = "assets/mal-logo.png";
+    malImg.alt = "MyAnimeList logo";
+    malImg.className = "mal-logo";
+
+    const scoreSpan = document.createElement("span");
+    scoreSpan.textContent = `${anime.malScore.toFixed(2)} MAL`;
+
+    rating.appendChild(malImg);
+    rating.appendChild(scoreSpan);
+
+    metaRow.appendChild(rating);
+    upper.appendChild(metaRow);
+  }
 
   const hint = document.createElement("div");
   hint.className = "card-tagline";
@@ -383,13 +384,20 @@ function createAnimeCard(anime) {
 function renderRecommendationSet(modeText) {
   clearCardList();
   const set = pickNextAnimeSet(3);
+
+  if (!set.length) {
+    cardsHint.textContent = "Loading recommendations… (mock data)";
+    return;
+  }
+
   set.forEach((anime) => {
     const card = createAnimeCard(anime);
     cardList.appendChild(card);
   });
   ensureCardsVisible();
   cardsHint.textContent = modeText;
-}
+};
+
 
 
 
@@ -563,6 +571,9 @@ chatForm.addEventListener("submit", (e) => {
 });
 
 // --------- SEED OPENING BOT MESSAGES ----------
+
+loadAnimeData();
+
 addBotMessage(
   "Hey, I’m Kana. Tell me what you feel like watching — mood, length, or vibes — and I’ll surface spoiler-safe anime cards you can expand at your own pace."
 );
