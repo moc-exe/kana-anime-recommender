@@ -81,11 +81,19 @@ const dataUsageToggle = document.getElementById("dataUsageToggle");
 const dataUsagePanel = document.getElementById("dataUsagePanel");
 
 // --------- STATE ----------
-let usedAnimeIds = new Set();
-let watchlistSize = 0;
-let hasStarted = false;
+let usedAnimeIds = new Set(); // tracks which anime have alr been shown
+let watchlistSize = 0; // stores the len of the entries in the uploaded json file user dropped
+let hasStarted = false; // until the first chat message started
 
 // --------- UTILITIES ----------
+
+/**
+ * addChatMessage builds a `<div>` with classes like "msg-row bot" or "msg-row user", 
+ * puts the text inside, and appends it to #chatScroll.
+ * @param {*} sender 
+ * @param {*} text 
+ */
+
 function addChatMessage(sender, text) {
   const row = document.createElement("div");
   row.className = "msg-row " + sender;
@@ -98,16 +106,33 @@ function addChatMessage(sender, text) {
   chatScroll.appendChild(row);
 
   chatScroll.scrollTop = chatScroll.scrollHeight;
-}
+} 
 
+/**
+ * Convenience wrapper aroung addChatMessage(sender="bot", text)
+ * @param {string} text 
+ */
 function addBotMessage(text) {
   addChatMessage("bot", text);
 }
 
+/**
+ * Convenience wrapper aroung addChatMessage(sender="user", text)
+ * @param {string} text 
+ */
 function addUserMessage(text) {
   addChatMessage("user", text);
 }
 
+
+/**
+ * 
+ * Filters out anime that are already in usedAnimeIds.
+ * If everything has been used, it resets the set and starts over.
+ * Shuffles the remaining ones randomly and returns the first count items.
+ * @param {number} count 
+ * @returns 
+ */
 function pickNextAnimeSet(count = 3) {
   const available = SAMPLE_ANIME.filter((a) => !usedAnimeIds.has(a.id));
   if (available.length === 0) {
@@ -118,15 +143,35 @@ function pickNextAnimeSet(count = 3) {
   return shuffled.slice(0, count);
 }
 
+
+/**
+ * nukes all existing cards
+ */
 function clearCardList() {
   cardList.innerHTML = "";
 }
 
+/**
+ * flips the wrapper from hidden to visible 
+ * (that’s the thing where the recs panel locks until you send the first message). 
+ */
 function ensureCardsVisible() {
   cardListWrapper.classList.remove("is-hidden");
   cardListWrapper.classList.add("is-visible");
 }
 
+/**
+ * Creates the outer `<article class="card">.`
+  Builds the top section (upper) with title + episode count + small hint text.
+  Builds the lower section (lower) with:
+  a “progress row” (progressRow) → the little “Step X / 3” text and arrow button
+  a content area (content) where we draw the current step
+  bottom buttons (“similar”, “skip”, “send to Discord”)
+
+    @param {Record<any,any>} anime an anime object
+ * 
+ * 
+ */
 function createAnimeCard(anime) {
   const card = document.createElement("article");
   card.className = "card";
@@ -200,12 +245,12 @@ function createAnimeCard(anime) {
   const againBtn = document.createElement("button");
   againBtn.type = "button";
   againBtn.className = "btn-sm";
-  againBtn.textContent = "Show something similar";
+  againBtn.textContent = "Show something similar"; // marks this anime as “used” and refreshes recs with “similar” mode (just copy text, still same pool).
 
   const skipBtn = document.createElement("button");
   skipBtn.type = "button";
   skipBtn.className = "btn-sm danger";
-  skipBtn.textContent = "Skip";
+  skipBtn.textContent = "Skip"; // same idea, but only removes that card; if the list becomes empty, it pulls a new set.
 
   const shareBtn = document.createElement("button");
   shareBtn.type = "button";
@@ -228,6 +273,20 @@ function createAnimeCard(anime) {
   // ===== STEP RENDERING =====
   let step = 1; // 1..3
 
+
+  /**
+   * Step 1:
+   * Sets label: "Step 1 · Mood & themes"
+   * Shows moodTags as pills and themes as text.
+   * 
+   * Step 2:
+   * Label: "Short description"
+   * Shows shortDescription.
+   * 
+   * Step 3:
+   * Label: "Synopsis & links"
+   * Shows synopsis + links as clickable pills.
+   */
   function renderStep() {
     // clear content
     content.innerHTML = "";
@@ -329,6 +388,14 @@ function renderRecommendationSet(modeText) {
   cardsHint.textContent = modeText;
 }
 
+
+
+/**
+ * 
+ * @param {string} mode "similar" or any other
+ * Asks for 3 anime, builds cards for each, appends them to #cardList.
+ * Updates the hint line (“Initial recommendations…”, “Fresh picks…”, etc.).
+ */
 function refreshRecommendations(mode) {
   if (mode === "similar") {
     renderRecommendationSet(
@@ -341,6 +408,12 @@ function refreshRecommendations(mode) {
   }
 }
 
+/**
+ * Removes the placeholder text (“No cards shared yet…”) the first time you share.
+  Appends a fake Discord-style bubble: “You · shared a card” + title + teaser.
+  Scrolls that panel to the bottom as messages accumulate.
+ * @param {Record} anime 
+ */
 function addDiscordShare(anime) {
   const emptyMsg = discordScroll.querySelector(".discord-empty");
   if (emptyMsg) emptyMsg.remove();
@@ -402,6 +475,16 @@ dataUsageToggle.addEventListener("click", () => {
 });
 
 // --------- CHAT FLOW ----------
+
+
+/**
+ * 
+ * Logs the user message.
+ * Builds an intro bot line (referencing watchlist size if available).
+ * Adds an extra “you can tell me things like…” line.
+ * Calls renderRecommendationSet("Initial recommendations...").
+ * @param {string} text 
+ */
 function handleFirstMessage(text) {
   addUserMessage(text);
 
@@ -410,7 +493,6 @@ function handleFirstMessage(text) {
   if (watchlistSize > 0) {
     intro += ` I’m also quietly using your watchlist (mock, ${watchlistSize} titles) to avoid obvious repeats.`;
   }
-
   addBotMessage(intro);
   addBotMessage(
     "You can tell me things like “short and melancholic”, “adult drama, no isekai”, or “philosophical sci-fi but not too bleak.”"
@@ -420,6 +502,12 @@ function handleFirstMessage(text) {
   );
 }
 
+/**
+ * Logs the user message.
+ * Bot replies with “Thanks, I’ll gently adjust the vibe…”
+ * Calls refreshRecommendations("fresh") (new 3-card batch).
+ * @param {string} text 
+ */
 function handleFollowupMessage(text) {
   addUserMessage(text);
   addBotMessage(
