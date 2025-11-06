@@ -79,6 +79,9 @@ const watchlistStatus = document.getElementById("watchlistStatus");
 const discordScroll = document.getElementById("discordScroll");
 const dataUsageToggle = document.getElementById("dataUsageToggle");
 const dataUsagePanel = document.getElementById("dataUsagePanel");
+const toast = document.getElementById("toast");
+const toastText = document.getElementById("toastText");
+const toastLogo = document.getElementById("toastLogo");
 
 // --------- STATE ----------
 let usedAnimeIds = new Set(); // tracks which anime have alr been shown
@@ -423,7 +426,7 @@ function addDiscordShare(anime) {
 
   const meta = document.createElement("div");
   meta.className = "discord-meta";
-  meta.textContent = "You · shared a card";
+  meta.textContent = `${new Date().getHours()}:${new Date().getMinutes()} You just shared a card with friends!`;
 
   const body = document.createElement("div");
   body.className = "discord-text";
@@ -434,7 +437,36 @@ function addDiscordShare(anime) {
 
   discordScroll.appendChild(msg);
   discordScroll.scrollTop = discordScroll.scrollHeight;
+
+  showToast("Shared to Discord (mock only – nothing actually sent)", true);
 }
+
+
+// --------- toast bubble (usually for discord) --------
+let toastTimeoutId = null;
+
+function showToast(message, withLogo = false) {
+  if (!toast) return;
+
+  if (toastText) {
+    toastText.textContent = message;
+  }
+
+  if (toastLogo) {
+    toastLogo.style.display = withLogo ? "block" : "none";
+  }
+
+  toast.classList.add("toast-visible");
+
+  if (toastTimeoutId) {
+    clearTimeout(toastTimeoutId);
+  }
+
+  toastTimeoutId = setTimeout(() => {
+    toast.classList.remove("toast-visible");
+  }, 2200);
+}
+
 
 // --------- WATCHLIST UPLOAD ----------
 watchlistInput.addEventListener("change", (e) => {
