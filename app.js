@@ -430,7 +430,7 @@ function addDiscordShare(anime) {
 
   const body = document.createElement("div");
   body.className = "discord-text";
-  body.textContent = `${anime.title} — ${anime.teaser}`;
+  body.textContent = `${anime.title} ${anime.teaser ?? ""}`;
 
   msg.appendChild(meta);
   msg.appendChild(body);
