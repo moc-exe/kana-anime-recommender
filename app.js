@@ -375,11 +375,28 @@ function addChatMessage(sender, text) {
   bubble.className = "msg-bubble " + sender;
   bubble.textContent = text;
 
-  row.appendChild(bubble);
-  chatScroll.appendChild(row);
+  if (sender === "bot") {
+    // Kana avatar on the left
+    const avatar = document.createElement("div");
+    avatar.className = "msg-avatar bot";
 
+    const img = document.createElement("img");
+    img.src = "assets/main-logo.png";
+    img.alt = "Kana avatar";
+    img.className = "msg-avatar-img";
+
+    avatar.appendChild(img);
+
+    row.appendChild(avatar);
+    row.appendChild(bubble);
+  } else {
+    // user: just the bubble, aligned right via CSS
+    row.appendChild(bubble);
+  }
+
+  chatScroll.appendChild(row);
   chatScroll.scrollTop = chatScroll.scrollHeight;
-} 
+}
 
 /**
  * Convenience wrapper aroung addChatMessage(sender="bot", text)
@@ -727,7 +744,11 @@ function addDiscordShare(anime) {
 
   const meta = document.createElement("div");
   meta.className = "discord-meta";
-  meta.textContent = `${new Date().getHours()}:${new Date().getMinutes()} You just shared a card with friends!`;
+
+  const now = new Date();
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  meta.textContent = `${hours}:${minutes} You just shared a card with friends!`;
 
   const body = document.createElement("div");
   body.className = "discord-text";
