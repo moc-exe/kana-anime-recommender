@@ -727,7 +727,11 @@ function addDiscordShare(anime) {
 
   const meta = document.createElement("div");
   meta.className = "discord-meta";
-  meta.textContent = `${new Date().getHours()}:${new Date().getMinutes()} You just shared a card with friends!`;
+
+  const now = new Date();
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  meta.textContent = `${hours}:${minutes} You just shared a card with friends!`;
 
   const body = document.createElement("div");
   body.className = "discord-text";
