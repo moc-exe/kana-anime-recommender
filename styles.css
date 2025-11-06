@@ -770,3 +770,19 @@ header {
 }
 
 
+/* Hide scrollbars but keep scroll functionality */
+.chat-scroll,
+.discord-scroll,
+.card-list {
+  scrollbar-width: none;      /* Firefox */
+}
+
+/* WebKit browsers (Chrome, Edge, Safari) */
+.chat-scroll::-webkit-scrollbar,
+.discord-scroll::-webkit-scrollbar,
+.card-list::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+
