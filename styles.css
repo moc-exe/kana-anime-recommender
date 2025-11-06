@@ -67,6 +67,8 @@ header {
   box-shadow: 0 10px 25px rgba(124, 92, 255, 0.8);
 }
 
+
+
 .brand-logo-img {
   width: 80%;
   height: 80%;
@@ -361,15 +363,16 @@ header {
 .card-list-wrapper.is-visible {
   opacity: 1;
   transform: scaleY(1);
+  margin-bottom: 15px;
 }
 .card-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  /* let cards be full height, page will scroll instead */
-  max-height: none;
-  overflow-y: visible;
-  padding-right: 0;
+  flex: 0 0 auto;           /* don't stretch to fill all remaining height */
+  max-height: 70vh;        /* cap how tall the list can make the bubble */
+  overflow-y: auto;
+  padding-right: 3px;
+  scrollbar-width: thin;
+  font-size: 11px;
+  width: 100%;
 }
 
 .card-list::-webkit-scrollbar {
@@ -391,6 +394,7 @@ header {
   gap: 8px;
   position: relative;
   overflow: hidden;
+  margin: 9px 10px 8px;
 }
 
 .card::before {
@@ -430,6 +434,42 @@ header {
   color: var(--text-soft);
   margin-top: 2px;
 }
+
+/* image itself */
+.card-cover {
+  width: 50%;
+  height: 50%;
+  align-items: center;
+  object-fit: cover;                    /* preserve aspect ratio */
+  transform-origin: center center;
+  transform: scale(var(--cover-zoom, 1));
+  transition: transform 0.25s ease-out;
+  border-radius: 5%;
+}
+
+.card-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: 4px;
+}
+
+.card-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--text-soft);
+}
+
+.mal-logo {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  border-radius: 3px;
+  display: block;
+}
+
 
 .pill-row {
   display: flex;
