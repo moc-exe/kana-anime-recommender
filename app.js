@@ -453,6 +453,15 @@ function createAnimeCard(anime) {
   const upper = document.createElement("div");
   upper.className = "card-upper";
 
+  // Cover image (if present)
+  if (anime.cover) {
+    const img = document.createElement("img");
+    img.src = anime.cover;
+    img.alt = `${anime.title} cover`;
+    img.className = "card-cover";
+    upper.appendChild(img);
+  }
+
   const titleRow = document.createElement("div");
   titleRow.className = "card-title-row";
 
@@ -467,6 +476,28 @@ function createAnimeCard(anime) {
   titleRow.appendChild(title);
   titleRow.appendChild(lengthPill);
   upper.appendChild(titleRow);
+
+    if (typeof anime.malScore === "number") {
+    const metaRow = document.createElement("div");
+    metaRow.className = "card-meta-row";
+
+    const rating = document.createElement("div");
+    rating.className = "card-rating";
+
+    const malImg = document.createElement("img");
+    malImg.src = "assets/mal-logo.png";
+    malImg.alt = "MyAnimeList logo";
+    malImg.className = "mal-logo";
+
+    const scoreSpan = document.createElement("span");
+    scoreSpan.textContent = `${anime.malScore.toFixed(2)} MAL`;
+
+    rating.appendChild(malImg);
+    rating.appendChild(scoreSpan);
+
+    metaRow.appendChild(rating);
+    upper.appendChild(metaRow);
+  }
 
   const hint = document.createElement("div");
   hint.className = "card-tagline";
