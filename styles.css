@@ -361,15 +361,16 @@ header {
 .card-list-wrapper.is-visible {
   opacity: 1;
   transform: scaleY(1);
+  margin-bottom: 15px;
 }
 .card-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  /* let cards be full height, page will scroll instead */
-  max-height: none;
-  overflow-y: visible;
-  padding-right: 0;
+  flex: 0 0 auto;           /* don't stretch to fill all remaining height */
+  max-height: 70vh;        /* cap how tall the list can make the bubble */
+  overflow-y: auto;
+  padding-right: 3px;
+  scrollbar-width: thin;
+  font-size: 11px;
+  width: 100%;
 }
 
 .card-list::-webkit-scrollbar {
@@ -391,6 +392,7 @@ header {
   gap: 8px;
   position: relative;
   overflow: hidden;
+  margin: 9px 10px 8px;
 }
 
 .card::before {
@@ -438,6 +440,8 @@ header {
   object-fit: cover;
   margin-bottom: 6px;
   display: block;
+  
+  
 }
 
 .card-meta-row {
