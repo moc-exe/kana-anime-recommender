@@ -514,16 +514,11 @@ header {
   gap: 6px;
 }
 
-.discord-title span.icon {
+.discord-logo {
   width: 18px;
   height: 18px;
-  border-radius: 7px;
-  background: #4752c4;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  color: white;
+  border-radius: 5px;
+  object-fit: cover;
 }
 
 .discord-sub {
