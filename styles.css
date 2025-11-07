@@ -347,6 +347,15 @@ header {
   color: #fecaca;
 }
 
+.btn-sm.danger:hover {
+  border-color: darkred;
+  color:red;
+}
+
+.btn-sm:hover{
+    border-color: rgba(148, 163, 184, 0.9);
+}
+
 .tiny-btn {
   padding: 4px 8px;
   font-size: 10px;
@@ -698,8 +707,41 @@ header {
 }
 
 .file-input {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  background: rgba(15, 23, 42, 0.95);
+  color: var(--text-muted);
   font-size: 11px;
-  color: var(--text-soft);
+  cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.file-input:hover {
+  border-color: rgba(148, 163, 184, 0.9);
+  background: rgba(15, 23, 42, 1);
+}
+
+.file-input-icon {
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+.file-input-label {
+  font-size: 11px;
+}
+
+/* hide the ugly native control but keep it clickable */
+.file-input input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
 }
 
 .status-pill {
@@ -731,6 +773,11 @@ header {
 .data-usage-panel {
   max-width: 520px;
 }
+
+.data-usage-row button{
+  border-radius: 10px;
+}
+
 
 /* Misc */
 
@@ -832,6 +879,10 @@ header {
 
 .progress-arrow-btn span.arrow {
   font-size: 11px;
+}
+.progress-arrow-btn:hover {
+  border-color: rgba(148, 163, 184, 0.9);
+  background: rgba(15, 23, 42, 1);
 }
 
 
