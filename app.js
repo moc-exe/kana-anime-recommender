@@ -381,7 +381,7 @@ function addChatMessage(sender, text) {
     avatar.className = "msg-avatar bot";
 
     const img = document.createElement("img");
-    img.src = "assets/main-logo.png";
+    img.src = "assets/main-logo-2.png";
     img.alt = "Kana avatar";
     img.className = "msg-avatar-img";
 
@@ -397,6 +397,8 @@ function addChatMessage(sender, text) {
   chatScroll.appendChild(row);
   chatScroll.scrollTop = chatScroll.scrollHeight;
 }
+
+
 
 /**
  * Convenience wrapper aroung addChatMessage(sender="bot", text)
