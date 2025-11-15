@@ -4,7 +4,7 @@ const SAMPLE_ANIME = [
   {
     "id": 1,
     "title": "Casshern Sins",
-    "cover": "/assets/shows/casshern.jpg",
+    "cover": "assets/shows/casshern.jpg",
     "malScore" : 7.50,
     "moodTags": ["Melancholic", "Philosophical", "Slow-burn"],
     "themes": ["Regret", "Identity", "Apocalypse"],
@@ -19,7 +19,7 @@ const SAMPLE_ANIME = [
   {
     "id": 2,
     "title": "Terror in Resonance",
-    "cover": "/assets/shows/terror-in-resonance.jpg",
+    "cover": "assets/shows/terror-in-resonance.jpg",
     "malScore" : 8.08,
     "moodTags": ["Modern", "Psychological", "Suspense"],
     "themes": ["Terrorism", "Trauma", "Media"],
@@ -35,7 +35,7 @@ const SAMPLE_ANIME = [
   {
     "id": 3,
     "title": "Puella Magi Madoka Magica",
-    "cover": "/assets/shows/madoka-magica.jpg",
+    "cover": "assets/shows/madoka-magica.jpg",
     "malScore" : 8.38,
     "moodTags": ["Deceptively cute", "Dark", "Mind-bending"],
     "themes": ["Hope", "Despair", "Sacrifice"],
@@ -49,7 +49,7 @@ const SAMPLE_ANIME = [
   {
     "id": 4,
     "title": "Sing “Yesterday” for Me",
-    "cover": "/assets/shows/sing-yesterday.jpg",
+    "cover": "assets/shows/sing-yesterday.jpg",
     "malScore" : 6.87,
     "moodTags": ["Grounded", "Romantic drama", "Adult life"],
     "themes": ["Stagnation", "Unrequited love", "Moving on"],
@@ -63,7 +63,7 @@ const SAMPLE_ANIME = [
   {
     "id": 5,
     "title": "Ghost in the Shell: Stand Alone Complex",
-    "cover": "/assets/shows/ghost-shell.jpg",
+    "cover": "assets/shows/ghost-shell.jpg",
     "malScore" : 8.27,
     "moodTags": ["Cyberpunk", "Philosophical", "Action"],
     "themes": ["Identity", "Networks", "Surveillance"],
@@ -77,7 +77,7 @@ const SAMPLE_ANIME = [
   {
     "id": 6,
     "title": "Ergo Proxy",
-    "cover": "/assets/shows/ergo-proxy.jpg",
+    "cover": "assets/shows/ergo-proxy.jpg",
     "malScore" : 7.90,
     "moodTags": ["Cyberpunk", "Existential", "Noir"],
     "themes": ["Identity", "Consciousness", "Isolation"],
@@ -90,7 +90,7 @@ const SAMPLE_ANIME = [
   {
     "id": 7,
     "title": "Paranoia Agent",
-    "cover": "/assets/shows/paranoia-agent.jpg",
+    "cover": "assets/shows/paranoia-agent.jpg",
     "malScore" : 7.66,
     "moodTags": ["Psychological", "Surreal", "Dark humor"],
     "themes": ["Society", "Delusion", "Fear"],
@@ -103,7 +103,7 @@ const SAMPLE_ANIME = [
   {
     "id": 8,
     "title": "Texhnolyze",
-    "cover": "/assets/shows/texhnolyze.jpg",
+    "cover": "assets/shows/texhnolyze.jpg",
     "malScore" : 7.75,
     "moodTags": ["Bleak", "Slow", "Philosophical"],
     "themes": ["Decay", "Human nature", "Technology"],
@@ -116,7 +116,7 @@ const SAMPLE_ANIME = [
   {
     "id": 9,
     "title": "Mushishi",
-    "cover": "/assets/shows/mushishi.jpg",
+    "cover": "assets/shows/mushishi.jpg",
     "malScore" : 8.65,
     "moodTags": ["Tranquil", "Mystical", "Anthology"],
     "themes": ["Nature", "Spirituality", "Impermanence"],
@@ -130,7 +130,7 @@ const SAMPLE_ANIME = [
   {
     "id": 10,
     "title": "Serial Experiments Lain",
-    "cover": "/assets/shows/lain.jpg",
+    "cover": "assets/shows/lain.jpg",
     "malScore" : 8.10,
     "moodTags": ["Cyber-mystery", "Abstract", "Psychological"],
     "themes": ["Reality", "Isolation", "Internet"],
@@ -143,7 +143,7 @@ const SAMPLE_ANIME = [
   {
     "id": 11,
     "title": "Welcome to the NHK",
-    "cover": "/assets/shows/welcome-nhk.jpg",
+    "cover": "assets/shows/welcome-nhk.jpg",
     "malScore" : 8.31,
     "moodTags": ["Depressive", "Dark comedy", "Slice of life"],
     "themes": ["Anxiety", "Isolation", "Society"],
@@ -156,7 +156,7 @@ const SAMPLE_ANIME = [
   {
     "id": 12,
     "title": "Death Parade",
-    "cover": "/assets/shows/death-parade.jpg",
+    "cover": "assets/shows/death-parade.jpg",
     "malScore" : 8.13,
     "moodTags": ["Psychological", "Philosophical", "Emotional"],
     "themes": ["Judgment", "Morality", "Afterlife"],
@@ -169,7 +169,7 @@ const SAMPLE_ANIME = [
     {
     "id": 13,
     "title": "A Place Further Than the Universe",
-    "cover": "/assets/shows/place-further-than-universe.jpg",
+    "cover": "assets/shows/place-further-than-universe.jpg",
     "malScore" : 8.13,
     "moodTags": ["Inspiring", "Coming-of-age", "Adventure"],
     "themes": ["Friendship", "Dreams", "Growth"],
@@ -182,7 +182,7 @@ const SAMPLE_ANIME = [
   {
     "id": 14,
     "title": "Made in Abyss",
-    "cover": "/assets/shows/made-in-abyss.jpg",
+    "cover": "assets/shows/made-in-abyss.jpg",
     "malScore" : 8.63,
     "moodTags": ["Adventure", "Dark", "Beautifully tragic"],
     "themes": ["Exploration", "Loss", "Survival"],
@@ -195,7 +195,7 @@ const SAMPLE_ANIME = [
   {
     "id": 15,
     "title": "The Tatami Galaxy",
-    "cover": "/assets/shows/tatami-galaxy.jpg",
+    "cover": "assets/shows/tatami-galaxy.jpg",
     "malScore" : 8.55,
     "moodTags": ["Fast-paced", "Existential", "Surreal"],
     "themes": ["Regret", "Choice", "Youth"],
@@ -208,7 +208,7 @@ const SAMPLE_ANIME = [
   {
     "id": 16,
     "title": "Haibane Renmei",
-    "cover": "/assets/shows/haibane-renmei.jpg",
+    "cover": "assets/shows/haibane-renmei.jpg",
     "malScore" : 7.99,
     "moodTags": ["Gentle", "Philosophical", "Mystery"],
     "themes": ["Redemption", "Memory", "Acceptance"],
@@ -221,7 +221,7 @@ const SAMPLE_ANIME = [
   {
     "id": 17,
     "title": "Erased",
-    "cover": "/assets/shows/erased.jpg",
+    "cover": "assets/shows/erased.jpg",
     "malScore" : 8.30,
     "moodTags": ["Thriller", "Emotional", "Mystery"],
     "themes": ["Regret", "Childhood", "Redemption"],
@@ -234,7 +234,7 @@ const SAMPLE_ANIME = [
   {
     "id": 18,
     "title": "Vivy: Fluorite Eye’s Song",
-    "cover": "/assets/shows/vivy.jpg",
+    "cover": "assets/shows/vivy.jpg",
     "malScore" : 8.38,
     "moodTags": ["Sci-fi", "Action", "Tragic"],
     "themes": ["AI", "Purpose", "Sacrifice"],
@@ -247,7 +247,7 @@ const SAMPLE_ANIME = [
   {
     "id": 19,
     "title": "Wolf’s Rain",
-    "cover": "/assets/shows/wolf-rain.jpg",
+    "cover": "assets/shows/wolf-rain.jpg",
     "malScore" : 7.79,
     "moodTags": ["Mythic", "Melancholic", "Adventure"],
     "themes": ["Survival", "Faith", "Endings"],
@@ -260,7 +260,7 @@ const SAMPLE_ANIME = [
   {
     "id": 20,
     "title": "Revolutionary Girl Utena",
-    "cover": "/assets/shows/utena.jpg",
+    "cover": "assets/shows/utena.jpg",
     "malScore" : 8.23,
     "moodTags": ["Symbolic", "Avant-garde", "Emotional"],
     "themes": ["Identity", "Gender", "Rebellion"],
@@ -273,7 +273,7 @@ const SAMPLE_ANIME = [
   {
     "id": 21,
     "title": "Land of the Lustrous",
-    "cover": "/assets/shows/houseki-no-kuni.jpg",
+    "cover": "assets/shows/houseki-no-kuni.jpg",
     "malScore" : 8.39,
     "moodTags": ["Beautiful", "Philosophical", "Lonely"],
     "themes": ["Change", "Identity", "Immortality"],
@@ -286,7 +286,7 @@ const SAMPLE_ANIME = [
   {
     "id": 22,
     "title": "Kaiba",
-    "cover": "/assets/shows/kaiba.jpg",
+    "cover": "assets/shows/kaiba.jpg",
     "malScore" : 8.14,
     "moodTags": ["Surreal", "Emotional", "Sci-fi"],
     "themes": ["Memory", "Class", "Love"],
@@ -299,7 +299,7 @@ const SAMPLE_ANIME = [
   {
     "id": 23,
     "title": "The Eccentric Family",
-    "cover": "/assets/shows/eccentric-family.jpg",
+    "cover": "assets/shows/eccentric-family.jpg",
     "malScore" : 7.82,
     "moodTags": ["Whimsical", "Heartfelt", "Philosophical"],
     "themes": ["Family", "Tradition", "Change"],
@@ -312,7 +312,7 @@ const SAMPLE_ANIME = [
   {
     "id": 24,
     "title": "Odd Taxi",
-    "cover": "/assets/shows/odd-taxi.jpg",
+    "cover": "assets/shows/odd-taxi.jpg",
     "malScore" : 8.64,
     "moodTags": ["Modern", "Crime", "Dialogue-heavy"],
     "themes": ["Secrets", "Society", "Loneliness"],
@@ -325,7 +325,7 @@ const SAMPLE_ANIME = [
   {
     "id": 25,
     "title": "Nana",
-    "cover": "/assets/shows/nana.jpg",
+    "cover": "assets/shows/nana.jpg",
     "malScore" : 8.81,
     "moodTags": ["Romantic drama", "Urban", "Emotional"],
     "themes": ["Friendship", "Love", "Ambition"],
